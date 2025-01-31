@@ -40,13 +40,13 @@ class Position:
     @staticmethod
     def get_from_key_name(key_name):
         if key_name == "up":
-            return Position(0, 1)
-        elif key_name == "down":
             return Position(0, -1)
+        elif key_name == "down":
+            return Position(0, 1)
         elif key_name == "left":
-            return Position(1, 0)
-        elif key_name == "right":
             return Position(-1, 0)
+        elif key_name == "right":
+            return Position(1, 0)
         else:
             return Position(0, 0)
 
