@@ -1,6 +1,9 @@
 import random
 from typing import Self
 
+from getchar import getchar_arrow
+
+
 class Position:
     x: int
     y: int
@@ -33,6 +36,19 @@ class Position:
         new_y = max(0, self.y)
         new_y = min(new_y, board_size_y - 1)
         return Position(new_x, new_y)
+    
+    @staticmethod
+    def get_from_key_name(key_name):
+        if key_name == "up":
+            return Position(0, 1)
+        elif key_name == "down":
+            return Position(0, -1)
+        elif key_name == "left":
+            return Position(1, 0)
+        elif key_name == "right":
+            return Position(-1, 0)
+        else:
+            return Position(0, 0)
 
 
 class Card:
@@ -52,6 +68,11 @@ class Card:
         "Modifies self.position"
         self.position = self.position.limited_to(board_size_x, board_size_y)
 
+    def interact_with(self, other, card_remover):
+        pass
+
+    def summary(self) -> str:
+        return ""
 
 class Creature(Card):
     live: int
@@ -64,6 +85,15 @@ class Creature(Card):
     def get_symbol(self) -> str:
         return "C"
     
+    def interact_with(self, other, card_remover):
+        if not isinstance(other, Creature):
+            return
+        self.live = self.live - other.attack
+        other.live = other.live - self.attack
+        if other.live <= 0:
+            card_remover(other)
+        if self.live <= 0:
+            card_remover(self)
 
 class Hero(Creature):
     name: str
@@ -73,7 +103,16 @@ class Hero(Creature):
     
     def get_symbol(self) -> str:
         return self.name[0]
-    
+
+    def do_movement(self) -> None:
+        key_pressed = getchar_arrow()
+        delta = Position.get_from_key_name(key_pressed)
+        self.position = self.position.copy_moved(delta)
+
+    def summary(self) -> str:
+        return f"[{self.name} {self.live}]"
+
+
 class Enemy(Creature):
     def get_symbol(self) -> str:
         return "E"

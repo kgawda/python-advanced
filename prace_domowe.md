@@ -40,3 +40,29 @@ Zagadka: Dlaczego print z linii [2] się nie drukuje? Żeby rozwiązać ten prob
 
 
 ## Przypomnieć sobie virtualenvs (venv)
+
+
+
+# Dzień 2
+
+## Przerobić Position na dataclass
+Sprawdzić czy wtedy trzeba robić własną implementację `__eq__`.
+Sprawdzić co znaczy `@dataclass(frozen=False)` i czy da się użyć w tym przypadku.
+
+Dokumentacja: <https://docs.python.org/3/library/dataclasses.html>
+
+## Przerobić Card na klasę abstrakcyjną
+Użyć zapisu:
+```python
+class Card(ABC):
+```
+oraz:
+```python
+@abstractmethod
+def get_symbol(self) -> str:
+```
+
+Domuentacja: <https://docs.python.org/3/library/abc.html>
+
+## Przerobić Creature na klasę abstrakcyjną
+Zagadka: powinno być `class Creature(Card, ABC):` czy `class Creature(ABC,Card):`? (i dlaczego tak?)
