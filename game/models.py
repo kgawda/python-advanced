@@ -27,9 +27,33 @@ class Position:
 
 class Card:
     position: Position
-    def __init__(self, position: Position):
+    def __init__(self, *, position: Position):
         self.position = position
         # self.position = Position(x, y)
 
     def get_symbol(self) -> str:
         return "X"
+
+class Creature(Card):
+    live: int
+    attack: int
+    def __init__(self, *, live=100, attack=10, **kwargs):
+        self.live = live
+        self.attack = attack
+        super().__init__(**kwargs)
+
+    def get_symbol(self) -> str:
+        return "C"
+
+class Hero(Creature):
+    name: str
+    def __init__(self, *, name: str, **kwargs) -> None:
+        self.name = name
+        super().__init__(**kwargs)
+    
+    def get_symbol(self) -> str:
+        return self.name[0]
+    
+class Enemy(Creature):
+    def get_symbol(self) -> str:
+        return "E"

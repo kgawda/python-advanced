@@ -1,4 +1,4 @@
-from models import Card, Position
+from models import Card, Position, Hero, Enemy
 
 
 def print_board(cards, board_size_x, board_size_y):
@@ -27,9 +27,9 @@ if __name__ == "__main__":
         if position in positions:
             continue
         positions.append(position)
-        cards.append(Card(position))
+        cards.append(Enemy(position=position, live=10, attack=5))
 
     position = Position.random(board_size_x, board_size_y)
-
+    cards.append(Hero(position=position, name="Henryk", attack=90))
     
     print_board(cards, board_size_x, board_size_y)
