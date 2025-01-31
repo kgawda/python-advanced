@@ -24,6 +24,16 @@ class Position:
     # def __hash__(self):
     #     return hash((self.x, self.y))
 
+    def copy_moved(self, delta: Self) -> Self:
+        return Position(self.x + delta.x, self.y + delta.y)
+    
+    def limited_to(self, board_size_x: int, board_size_y: int) -> Self:
+        new_x = max(0, self.x)
+        new_x = min(new_x, board_size_x - 1)
+        new_y = max(0, self.y)
+        new_y = min(new_y, board_size_y - 1)
+        return Position(new_x, new_y)
+
 
 class Card:
     position: Position
@@ -33,6 +43,15 @@ class Card:
 
     def get_symbol(self) -> str:
         return "X"
+    
+    def do_movement(self) -> None:
+        "Modifies slef.position"
+        pass
+
+    def lmit_to_board(self, board_size_x: int, board_size_y: int) -> None:
+        "Modifies self.position"
+        self.position = self.position.limited_to(board_size_x, board_size_y)
+
 
 class Creature(Card):
     live: int
@@ -44,6 +63,7 @@ class Creature(Card):
 
     def get_symbol(self) -> str:
         return "C"
+    
 
 class Hero(Creature):
     name: str
@@ -57,3 +77,7 @@ class Hero(Creature):
 class Enemy(Creature):
     def get_symbol(self) -> str:
         return "E"
+    
+    def do_movement(self) -> None:
+        delta = Position(random.randint(-1,1), random.randint(-1,1))
+        self.position = self.position.copy_moved(delta)

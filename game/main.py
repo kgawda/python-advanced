@@ -1,3 +1,4 @@
+import time
 from models import Card, Position, Hero, Enemy
 
 
@@ -11,6 +12,7 @@ def print_board(cards, board_size_x, board_size_y):
             else:  # po pętli for, jeśli nie było break
                 print(". ", end="")
         print()
+    print()
 
 if __name__ == "__main__":
     board_size_x = 15
@@ -32,4 +34,9 @@ if __name__ == "__main__":
     position = Position.random(board_size_x, board_size_y)
     cards.append(Hero(position=position, name="Henryk", attack=90))
     
-    print_board(cards, board_size_x, board_size_y)
+    while True:
+        for card in cards:
+            card.do_movement()
+            card.lmit_to_board(board_size_x, board_size_y)
+        print_board(cards, board_size_x, board_size_y)
+        time.sleep(0.1)
