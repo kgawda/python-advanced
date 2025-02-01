@@ -45,9 +45,10 @@ def run_turn(board_size_x, board_size_y, cards, min_cards, print_target, sleep_t
             if (card.position == other.position) and (other != card):
                 card.interact_with(other, card_remover=cards.remove)
 
-        if len(cards) < min_cards:
-            position = Position.random(board_size_x, board_size_y)
-            cards.append(Enemy(position=position, live=10, attack=5))
+    if len(cards) < min_cards:
+        # TODO: add more cards if more than 1 missing
+        position = Position.random(board_size_x, board_size_y)
+        cards.append(Enemy(position=position, live=10, attack=5))
     
     if sleep_time:
         time.sleep(sleep_time)
