@@ -1,51 +1,80 @@
+import io
+import sys
 import time
 from models import Card, Position, Hero, Enemy
 
 
-def print_board(cards, board_size_x, board_size_y):
+def print_board(cards, board_size_x, board_size_y, print_target):
     for y in range(board_size_y):
         for x in range(board_size_x):
             for card in cards:
                 if card.position.x == x and card.position.y == y:
-                    print(card.get_symbol() + " ", end="")
+                    print(card.get_symbol() + " ", end="", file=print_target)
                     break
             else:  # po pętli for, jeśli nie było break
-                print(". ", end="")
-        print()
-    print("".join(c.summary() for c in cards))
+                print(". ", end="", file=print_target)
+        print(file=print_target)
+    print("".join(c.summary() for c in cards), file=print_target)
 
-if __name__ == "__main__":
-    board_size_x = 15
-    board_size_y = 15
+
+def prepare_cards(board_size_x, board_size_y, n_enemies, n_heroes):
     cards = []
-
-    assert Position(1, 1) == Position(1, 1), "Powinny być równe"
-    assert Position(1, 1) != "cokolwiek", "Powinny być różne"
-    assert Position(1, 1) in [Position(1, 1)]
-
-    # Rozstawiamy na planszy
     positions = []
-    for _ in range(5):
+    for _ in range(n_enemies):
         position = Position.random(board_size_x, board_size_y)
         if position in positions:
             continue
         positions.append(position)
         cards.append(Enemy(position=position, live=10, attack=5))
 
-    position = Position.random(board_size_x, board_size_y)
-    hero = Hero(position=position, name="Henryk", attack=90)
-    cards.append(hero)
+    for _ in range(n_heroes):
+        position = Position.random(board_size_x, board_size_y)
+        hero = Hero(position=position, name="Henryk", attack=90)
+        cards.append(hero)
+    
+    return cards
+
+
+def run_turn(board_size_x, board_size_y, cards, min_cards, print_target, sleep_time) -> None:
+    print_board(cards, board_size_x, board_size_y, print_target)
+    for card in cards:
+        card.do_movement()
+        card.lmit_to_board(board_size_x, board_size_y)
+
+        for other in cards:
+            if (card.position == other.position) and (other != card):
+                card.interact_with(other, card_remover=cards.remove)
+
+        if len(cards) < min_cards:
+            position = Position.random(board_size_x, board_size_y)
+            cards.append(Enemy(position=position, live=10, attack=5))
+    
+    if sleep_time:
+        time.sleep(sleep_time)
+
+
+def simulate():
+    board_size_x = 15
+    board_size_y = 15
+    cards = prepare_cards(board_size_x, board_size_y, 5, 0)
+    print_buffer = io.StringIO()
+    for _ in range(10_000):
+        run_turn(board_size_x, board_size_y, cards, min_cards=5, print_target=print_buffer, sleep_time=0)
+
+def interactive_game():
+    board_size_x = 15
+    board_size_y = 15
+    
+    assert Position(1, 1) == Position(1, 1), "Powinny być równe"
+    assert Position(1, 1) != "cokolwiek", "Powinny być różne"
+    assert Position(1, 1) in [Position(1, 1)]
+
+    # Rozstawiamy na planszy
+    cards = prepare_cards(board_size_x, board_size_y, 5, 1)
     
     # Gramy
-    print_board(cards, board_size_x, board_size_y)
     while True:
-        for card in cards:
-            card.do_movement()
-            card.lmit_to_board(board_size_x, board_size_y)
+        run_turn(board_size_x, board_size_y, cards, min_cards=4, print_target=sys.stdout, sleep_time=0.1) 
 
-            for other in cards:
-                if (card.position == other.position) and (other != card):
-                    card.interact_with(other, card_remover=cards.remove)
-
-        print_board(cards, board_size_x, board_size_y)
-        time.sleep(0.1)
+if __name__ == "__main__":
+    simulate()
