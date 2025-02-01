@@ -1,5 +1,6 @@
 import random
 from typing import Self
+from abc import ABC, abstractmethod
 
 from getchar import getchar_arrow
 
@@ -51,14 +52,15 @@ class Position:
             return Position(0, 0)
 
 
-class Card:
+class Card(ABC):
     position: Position
     def __init__(self, *, position: Position):
         self.position = position
         # self.position = Position(x, y)
 
+    @abstractmethod
     def get_symbol(self) -> str:
-        return "X"
+        ...
     
     def do_movement(self) -> None:
         "Modifies slef.position"
