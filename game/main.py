@@ -42,7 +42,8 @@ def run_turn(board_size_x, board_size_y, cards, min_cards, print_target, sleep_t
         card.lmit_to_board(board_size_x, board_size_y)
 
         for other in cards:
-            if (card.position == other.position) and (other != card):
+            if (card.position == other.position) and (other != card) and (card in cards):
+                # TODO: change `card in cards` to faster solution
                 card.interact_with(other, card_remover=cards.remove)
 
     if len(cards) < min_cards:
