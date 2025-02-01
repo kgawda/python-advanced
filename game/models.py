@@ -76,16 +76,13 @@ class Card(ABC):
     def summary(self) -> str:
         return ""
 
-class Creature(Card):
+class Creature(Card, ABC):
     live: int
     attack: int
     def __init__(self, *, live=100, attack=10, **kwargs):
         self.live = live
         self.attack = attack
         super().__init__(**kwargs)
-
-    def get_symbol(self) -> str:
-        return "C"
     
     def interact_with(self, other, card_remover):
         if not isinstance(other, Creature):

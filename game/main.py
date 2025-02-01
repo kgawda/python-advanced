@@ -35,7 +35,8 @@ def prepare_cards(board_size_x, board_size_y, n_enemies, n_heroes):
     return cards
 
 
-def run_turn(board_size_x, board_size_y, cards, min_cards, print_target, sleep_time) -> None:
+def run_turn(board_size_x, board_size_y, cards, min_cards, print_target, sleep_time) -> int:
+    new_cards = 0
     print_board(cards, board_size_x, board_size_y, print_target)
     for card in cards:
         card.do_movement()
@@ -50,18 +51,23 @@ def run_turn(board_size_x, board_size_y, cards, min_cards, print_target, sleep_t
         # TODO: add more cards if more than 1 missing
         position = Position.random(board_size_x, board_size_y)
         cards.append(Enemy(position=position, live=10, attack=5))
+        new_cards += 1
     
     if sleep_time:
         time.sleep(sleep_time)
 
+    return new_cards
 
-def simulate():
+
+def simulate() -> int:
     board_size_x = 15
     board_size_y = 15
+    new_cards_counter = 0
     cards = prepare_cards(board_size_x, board_size_y, 5, 0)
     print_buffer = io.StringIO()
     for _ in range(10_000):
-        run_turn(board_size_x, board_size_y, cards, min_cards=5, print_target=print_buffer, sleep_time=0)
+        new_cards_counter += run_turn(board_size_x, board_size_y, cards, min_cards=5, print_target=print_buffer, sleep_time=0)
+    return new_cards_counter
 
 def interactive_game():
     board_size_x = 15
@@ -79,4 +85,5 @@ def interactive_game():
         run_turn(board_size_x, board_size_y, cards, min_cards=4, print_target=sys.stdout, sleep_time=0.1) 
 
 if __name__ == "__main__":
-    simulate()
+    new_cards_counter = simulate()
+    print(new_cards_counter)
