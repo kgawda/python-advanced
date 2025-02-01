@@ -12,6 +12,6 @@ pstats.Stats(pr).sort_stats(pstats.SortKey.TIME).print_stats()
 # python -m cProfile -s tottime main.py
 
 mem1 = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-# kod alokujący pamięć
+# kod programu
 mem2 = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
 mem2 - mem1  # wzrost zaalokowanej pamięci w kB

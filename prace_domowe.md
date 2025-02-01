@@ -43,26 +43,17 @@ Zagadka: Dlaczego print z linii [2] się nie drukuje? Żeby rozwiązać ten prob
 
 
 
-# Dzień 2
+# Dzień 2/3
 
-## Przerobić Position na dataclass
-Sprawdzić czy wtedy trzeba robić własną implementację `__eq__`.
-Sprawdzić co znaczy `@dataclass(frozen=False)` i czy da się użyć w tym przypadku.
+## Cz. 1: Przerobić Position na dataclass
+Sprawdzić czy wtedy można usunąć dotychczasową implementację `__eq__`.
 
 Dokumentacja: <https://docs.python.org/3/library/dataclasses.html>
 
-## Przerobić Card na klasę abstrakcyjną
-Użyć zapisu:
-```python
-class Card(ABC):
-```
-oraz:
-```python
-@abstractmethod
-def get_symbol(self) -> str:
-```
+## Cz. 3:
+Spróbować użyć dla Position `@dataclass(slots=True)` i czy da się użyć w tym przypadku.
+Sprawdzić czy wpływnęło to na użycie pamięci przez program.
 
-Domuentacja: <https://docs.python.org/3/library/abc.html>
-
-## Przerobić Creature na klasę abstrakcyjną
-Zagadka: powinno być `class Creature(Card, ABC):` czy `class Creature(ABC,Card):`? (i dlaczego tak?)
+## Cz. 2: 
+Sprawdzić co znaczy `@dataclass(frozen=True)` (może być razem z `slots=True`) i czy da się użyć na Position. (Hint: jeśli zmieniamy zawartosć `.x` i `.y` poza `__init__`, to raczej nie zadziała).
+Jeśli zmiana była możliwa: sprawdzić wpływ na czas działania programu.
