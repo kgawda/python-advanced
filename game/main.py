@@ -42,7 +42,8 @@ def prepare_cards(board_size_x, board_size_y, n_enemies, n_heroes):
 
 def run_turn(board_size_x, board_size_y, cards, min_cards, print_target, sleep_time) -> int:
     new_cards = 0
-    print_board(cards, board_size_x, board_size_y, print_target)
+    if print_target:
+        print_board(cards, board_size_x, board_size_y, print_target)
     for card in cards:
         card.do_movement()
         card.lmit_to_board(board_size_x, board_size_y)
