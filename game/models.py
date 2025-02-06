@@ -2,7 +2,7 @@ import random
 from typing import Self
 from abc import ABC, abstractmethod
 
-from getchar import getchar_arrow
+from .getchar import getchar_arrow
 
 
 class Position:

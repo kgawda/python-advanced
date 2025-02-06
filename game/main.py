@@ -1,7 +1,8 @@
 import io
 import sys
 import time
-from models import Card, Position, Hero, Enemy
+
+from .models import Card, Position, Hero, Enemy
 
 
 def print_board(cards, board_size_x, board_size_y, print_target):

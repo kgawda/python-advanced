@@ -1,5 +1,13 @@
 from flask import Flask, render_template
 
+# import webapp.example
+# from . import example
+# from .example import Example
+# from .. import dziedziczenie  # nie zadziała
+# from ..dziedziczenie import Dog  # nie zadziała
+from .submodule import subtest
+from game.main import prepare_cards
+
 app = Flask(__name__)
 
 def funny_name(name: str) -> str:
@@ -33,6 +41,15 @@ def greetings(name):
         name=name,
         paragraph_count=4,
         other_names=other_names,
+    )
+
+#@...
+def game():
+    ...
+    # prepare_cards(board_size_x=15, board_size_y=15, n_enemies=5, n_heroes=0)
+    return render_template(
+        "game.html.j2",
+        #...
     )
 
 if __name__ == "__main__":

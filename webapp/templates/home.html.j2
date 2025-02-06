@@ -1,8 +1,13 @@
 <html>
     <body>
-        <h1>Hello {{name.upper() | e}}</h1>
+        <h1>Hello {{name | funny_name | upper | e}}</h1>
+        <h2>
+            Also hello to {{other_names | join(", ") }}
+        </h2>
         {% for x in range(paragraph_count) %}
-            <p>Akapit {{x + 1}}</p>
+            <p>Akapit {{x | upper}}</p>
         {% endfor %}
+        <p>by {{company_name}} 2025</p>
     </body>
+    {# Komentarz #}
 </html>
