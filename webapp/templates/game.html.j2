@@ -1,11 +1,17 @@
 {% extends "base.html.j2" %}
 
+{% block head_content %}
+{# {% if cards | length > 1 %}
+    <meta http-equiv="refresh" content="5" > 
+{% endif %} #}
+{% endblock %}
+
 {% block content %}
     <table border="1">
         {% for y in range(board_size_y)%}
             <tr>
                 {% for x in range(board_size_x)%}
-                    <td>
+                    <td style="height: 20px; width: 20px;">
                         {% set cards_here = iter_cards_at(cards, x, y) | list %}
                         {% if cards_here %}
                             {# {{ (cards_here | first).get_symbol() }} #}
@@ -18,4 +24,9 @@
             </tr>
         {% endfor %}
     </table>
+
+    <form method="post">
+        <button name="button_up" type="submit" class="btn btn-primary">Up</button>
+        <button name="button_down" type="submit" class="btn btn-primary">Down</button>
+    </form>
 {% endblock %}

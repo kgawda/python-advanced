@@ -96,15 +96,16 @@ class Creature(Card, ABC):
 
 class Hero(Creature):
     name: str
-    def __init__(self, *, name: str, **kwargs) -> None:
+    def __init__(self, *, name: str, movement_callback=None, **kwargs) -> None:
         self.name = name
+        self.movement_callback = movement_callback or getchar_arrow
         super().__init__(**kwargs)
     
     def get_symbol(self) -> str:
         return self.name[0]
 
     def do_movement(self) -> None:
-        key_pressed = getchar_arrow()
+        key_pressed = self.movement_callback()
         delta = Position.get_from_key_name(key_pressed)
         self.position = self.position.copy_moved(delta)
 

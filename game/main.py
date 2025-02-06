@@ -22,7 +22,7 @@ def print_board(cards, board_size_x, board_size_y, print_target):
     print("".join(c.summary() for c in cards), file=print_target)
 
 
-def prepare_cards(board_size_x, board_size_y, n_enemies, n_heroes):
+def prepare_cards(board_size_x, board_size_y, n_enemies, n_heroes, hero_kwargs:dict|None=None):
     cards = []
     positions = []
     for _ in range(n_enemies):
@@ -32,9 +32,11 @@ def prepare_cards(board_size_x, board_size_y, n_enemies, n_heroes):
         positions.append(position)
         cards.append(Enemy(position=position, live=10, attack=5))
 
+    if hero_kwargs is None:
+        hero_kwargs = {}
     for _ in range(n_heroes):
         position = Position.random(board_size_x, board_size_y)
-        hero = Hero(position=position, name="Henryk", attack=90)
+        hero = Hero(position=position, name="Henryk", attack=90, **hero_kwargs)
         cards.append(hero)
     
     return cards

@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+import time
+from flask import Flask, render_template, request
 
 # import webapp.example
 # from . import example
@@ -6,9 +7,23 @@ from flask import Flask, render_template
 # from .. import dziedziczenie  # nie zadziała
 # from ..dziedziczenie import Dog  # nie zadziała
 from .submodule import subtest
-from game.main import iter_cards_at, prepare_cards
+from game.main import iter_cards_at, prepare_cards, run_turn
 
 app = Flask(__name__)
+
+
+hero_movement = None
+def move_hero():
+    return hero_movement
+
+cards = prepare_cards(
+    board_size_x=15,
+    board_size_y=15,
+    n_enemies=5,
+    n_heroes=1,
+    hero_kwargs={"movement_callback": move_hero},
+)
+
 
 def funny_name(name: str) -> str:
     return name[::-1].title()
@@ -45,9 +60,20 @@ def greetings(name):
         other_names=other_names,
     )
 
-@app.route("/game")
+@app.route("/game", methods=["GET", "POST"])
 def game():
-    cards = prepare_cards(board_size_x=15, board_size_y=15, n_enemies=5, n_heroes=0)
+    global hero_movement
+    if request.method == "POST":
+        if "button_up" in request.form:
+            hero_movement = "up"
+        elif "button_down" in request.form:
+            hero_movement = "down"
+    else:
+        hero_movement = None
+    
+    run_turn(
+        board_size_x=15, board_size_y=15, cards=cards, sleep_time=0, print_target=None, min_cards=0,
+    )
     return render_template(
         "game.html.j2",
         cards=cards,
