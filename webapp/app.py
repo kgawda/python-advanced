@@ -6,7 +6,7 @@ from flask import Flask, render_template
 # from .. import dziedziczenie  # nie zadziała
 # from ..dziedziczenie import Dog  # nie zadziała
 from .submodule import subtest
-from game.main import prepare_cards
+from game.main import iter_cards_at, prepare_cards
 
 app = Flask(__name__)
 
@@ -17,10 +17,12 @@ def funny_name(name: str) -> str:
 def standard_context():
     return dict(
         company_name="Acme INC.",
+        iter_cards_at=iter_cards_at,
         # Funkcje też można tu przekazać
     )
 
 app.jinja_env.filters["funny_name"] = funny_name
+app.jinja_env.add_extension("jinja2.ext.loopcontrols")
 
 @app.route("/")
 def hello_world():
@@ -43,13 +45,14 @@ def greetings(name):
         other_names=other_names,
     )
 
-#@...
+@app.route("/game")
 def game():
-    ...
-    # prepare_cards(board_size_x=15, board_size_y=15, n_enemies=5, n_heroes=0)
+    cards = prepare_cards(board_size_x=15, board_size_y=15, n_enemies=5, n_heroes=0)
     return render_template(
         "game.html.j2",
-        #...
+        cards=cards,
+        board_size_x=15,
+        board_size_y=15,
     )
 
 if __name__ == "__main__":

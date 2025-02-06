@@ -1,17 +1,21 @@
 import io
 import sys
 import time
+from typing import Iterable
 
 from .models import Card, Position, Hero, Enemy
 
+def iter_cards_at(cards: list[Card], x:int, y:int) -> Iterable[Card]:
+    for card in cards:
+        if card.position.x == x and card.position.y == y:
+            yield card
 
 def print_board(cards, board_size_x, board_size_y, print_target):
     for y in range(board_size_y):
         for x in range(board_size_x):
-            for card in cards:
-                if card.position.x == x and card.position.y == y:
-                    print(card.get_symbol() + " ", end="", file=print_target)
-                    break
+            for card in iter_cards_at(cards, x, y):
+                print(card.get_symbol() + " ", end="", file=print_target)
+                break
             else:  # po pętli for, jeśli nie było break
                 print(". ", end="", file=print_target)
         print(file=print_target)
