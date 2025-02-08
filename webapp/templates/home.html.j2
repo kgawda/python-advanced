@@ -1,12 +1,23 @@
 {% extends "base.html.j2" %}
 
 {% block content %}
+
     <h1>Hello {{name | funny_name | upper | e}}</h1>
+
     <h2>
-        Also hello to {{other_names | join(", ") }}
+        Also hello to
+        {% for other_name in other_names%}
+            <a href="{{ url_for('greetings', name=other_name)}}">{{other_name}}</a>
+        {% endfor %}
     </h2>
+
+    <p>
+        <a href="{{ url_for('game') }}">Wejdź do gry</a>
+    </p>
+
     {% for x in range(paragraph_count) %}
         <p>Akapit {{x | upper}}</p>
     {% endfor %}
     <p>by {{company_name}} 2025</p>
+
 {% endblock %}

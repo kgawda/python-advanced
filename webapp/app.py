@@ -1,5 +1,6 @@
+from functools import wraps
 import time
-from flask import Flask, make_response, render_template, request, g
+from flask import Flask, make_response, redirect, render_template, request, g, session, url_for
 
 # import webapp.example
 # from . import example
@@ -10,7 +11,7 @@ from .submodule import subtest
 from game.main import iter_cards_at, prepare_cards, run_turn
 
 app = Flask(__name__)
-
+app.secret_key = "--- Development-only key ---"
 
 hero_movement = None
 def move_hero():
@@ -49,23 +50,50 @@ app.jinja_env.add_extension("jinja2.ext.loopcontrols")
 
 @app.before_request
 def check_request():
-    g.username = request.cookies.get('username', "Unknown")
+    # g.username = request.cookies.get('username', "Unknown")
+    g.username = session.get('username', "Unknown")
+    if g.username == "admin":
+        g.user_roles = ["reader", "admin"]
+    else:
+        g.user_roles = ["reader"]
     is_user_local = (request.remote_addr == "127.0.0.1")
     g.is_user_local = is_user_local
 
+
+def admin_role_needed(view):
+    @wraps(view)
+    def decorated_view(*args, **kwargs):
+        if "admin" not in g.user_roles:
+            return "You have no permissions. Your roles are: " + str(g.user_roles)
+        return view(*args, **kwargs)
+    return decorated_view
+
+
 @app.get("/login")
 def login_form():
-    response = make_response("<h1>OK")
-    response.set_cookie('username', "Henryk")
-    return response
+    return '''
+        <form method="post">
+            <p><input type=text name=username>
+            <p><input type=password name=password>
+            <p><input type=submit value=Login>
+        </form>
+    '''
 
-# @app.post("/login")
-# def login():
-#     ...
+@app.post("/login")
+def login():
+    # response = make_response("<h1>OK")
+    # response.set_cookie('username', request.form['username'])
+    # return response
+    session["username"] = request.form['username']
+    return redirect(url_for("home"))
 
+@app.get("/administration")
+@admin_role_needed
+def administration():
+    return "<h1>This is admin page"
 
 @app.route("/")
-def hello_world():
+def home():
     # from pprint import pprint
     # pprint(vars(request))
     name = g.username
