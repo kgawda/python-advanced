@@ -1,13 +1,12 @@
-<html>
-    <body>
-        <h1>Hello {{name | funny_name | upper | e}}</h1>
-        <h2>
-            Also hello to {{other_names | join(", ") }}
-        </h2>
-        {% for x in range(paragraph_count) %}
-            <p>Akapit {{x | upper}}</p>
-        {% endfor %}
-        <p>by {{company_name}} 2025</p>
-    </body>
-    {# Komentarz #}
-</html>
+{% extends "base.html.j2" %}
+
+{% block content %}
+    <h1>Hello {{name | funny_name | upper | e}}</h1>
+    <h2>
+        Also hello to {{other_names | join(", ") }}
+    </h2>
+    {% for x in range(paragraph_count) %}
+        <p>Akapit {{x | upper}}</p>
+    {% endfor %}
+    <p>by {{company_name}} 2025</p>
+{% endblock %}

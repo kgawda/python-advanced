@@ -1,5 +1,5 @@
 import time
-from flask import Flask, render_template, request
+from flask import Flask, make_response, render_template, request, g
 
 # import webapp.example
 # from . import example
@@ -28,6 +28,14 @@ cards = prepare_cards(
 def funny_name(name: str) -> str:
     return name[::-1].title()
 
+
+
+def get_db():
+    if '_db' not in g:
+        g._db = ... # CreateDatabaseConnection(...)
+    return g._db
+
+
 @app.context_processor
 def standard_context():
     return dict(
@@ -39,9 +47,31 @@ def standard_context():
 app.jinja_env.filters["funny_name"] = funny_name
 app.jinja_env.add_extension("jinja2.ext.loopcontrols")
 
+@app.before_request
+def check_request():
+    g.username = request.cookies.get('username', "Unknown")
+    is_user_local = (request.remote_addr == "127.0.0.1")
+    g.is_user_local = is_user_local
+
+@app.get("/login")
+def login_form():
+    response = make_response("<h1>OK")
+    response.set_cookie('username', "Henryk")
+    return response
+
+# @app.post("/login")
+# def login():
+#     ...
+
+
 @app.route("/")
 def hello_world():
-    name = "Konrad"
+    # from pprint import pprint
+    # pprint(vars(request))
+    name = g.username
+    print("Hello", name)
+    if 'is_user_local' in g and g.is_user_local:
+        name += " (local)"
     other_names = ["Ania", "Karol", "Kasia"]
     return render_template(
         "home.html.j2",
