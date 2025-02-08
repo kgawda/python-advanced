@@ -68,6 +68,10 @@ def game():
             hero_movement = "up"
         elif "button_down" in request.form:
             hero_movement = "down"
+        elif "button_left" in request.form:
+            hero_movement = "left"
+        elif "button_right" in request.form:
+            hero_movement = "right"
     else:
         hero_movement = None
     
