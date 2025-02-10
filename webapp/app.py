@@ -11,6 +11,10 @@ from flask import Flask, jsonify, make_response, redirect, render_template, requ
 from .submodule import subtest
 from game.main import iter_cards_at, prepare_cards, run_turn
 
+from webapp.views.game import game_view  # bez blueprint
+from webapp.views.game import bp as bp_game
+
+
 app = Flask(__name__)
 app.secret_key = "--- Development-only key ---"
 
@@ -119,30 +123,12 @@ def greetings(name):
         other_names=other_names,
     )
 
-@app.route("/game", methods=["GET", "POST"])
-def game():
-    global hero_movement
-    if request.method == "POST":
-        if "button_up" in request.form:
-            hero_movement = "up"
-        elif "button_down" in request.form:
-            hero_movement = "down"
-        elif "button_left" in request.form:
-            hero_movement = "left"
-        elif "button_right" in request.form:
-            hero_movement = "right"
-    else:
-        hero_movement = None
-    
-    run_turn(
-        board_size_x=15, board_size_y=15, cards=cards, sleep_time=0, print_target=None, min_cards=0,
-    )
-    return render_template(
-        "game.html.j2",
-        cards=cards,
-        board_size_x=15,
-        board_size_y=15,
-    )
+# Bez blueprint (dwie opcje):
+# app.route("/game", methods=["GET", "POST"])(game_view)
+# app.add_url_rule("/game", view_func=game_view, methods=["GET", "POST"])
+
+app.register_blueprint(bp_game, url_prefix="/game")
+
 
 @app.get('/api/game/cards')
 def get_cards_api():
