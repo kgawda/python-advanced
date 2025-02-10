@@ -8,6 +8,12 @@ hero_movement = None
 def move_hero():
     return hero_movement
 
+# record decorator docs: https://flask.palletsprojects.com/en/stable/api/#flask.Blueprint.record
+@bp.record
+def register(bp_setup):
+    # flask.blueprints.BlueprintSetupState type: https://flask.palletsprojects.com/en/stable/api/#flask.blueprints.BlueprintSetupState
+    print("SETUP BP:", bp_setup.options, bp_setup.app)
+
 
 @bp.route("/scoreboard", methods=["GET", "POST"])
 def scoreboard():
