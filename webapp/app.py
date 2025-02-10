@@ -14,6 +14,7 @@ from game.main import iter_cards_at, prepare_cards, run_turn
 
 from webapp.views.game import game_view  # bez blueprint
 from webapp.views.game import bp as bp_game
+from webapp.db import get_db
 
 def create_app():
     app = Flask(__name__)
@@ -24,6 +25,10 @@ def create_app():
     # e.g. export FLASK_COMPANY_NAME="Fiasco Sp.z.o.o."
     with contextlib.suppress(FileNotFoundError):
         app.config.from_file("config.json", load=json.load)
+
+    with app.app_context():
+        # get_db().append_cards([...])
+        ...  # DB init code here
 
     def funny_name(name: str) -> str:
         return name[::-1].title()
@@ -141,9 +146,13 @@ def create_app():
             yield f"--{x}--"
             time.sleep(0.1)
 
+    # Using Click framework
+    @app.cli.command("init-db")
+    def init_database():
+        get_db().append_cards([...])
+        print("After init there are", len(get_db().get_cards()), "cards")
+
     return app
-
-
 
 if __name__ == "__main__":
     create_app().run(debug=True)  #, use_reloader=False

@@ -1,4 +1,5 @@
 from flask import Flask, abort, render_template
+import werkzeug
 
 mock_db = {
     1: ("Jan Kochanowski", "Poeta renesansowy, znany z 'Trenów' oraz 'Odprawy posłów greckich'."),
@@ -7,11 +8,19 @@ mock_db = {
     4: ("Henryk Sienkiewicz", "Pisarz, laureat Nagrody Nobla, autor 'Quo Vadis'."),
 }
 
+class AppError(Exception):
+    pass
+
+
 app = Flask(__name__)
 
 @app.route("/")
 def home():
     return render_template("home.html.j2")
+
+@app.route("/exception")
+def raise_exception():
+    raise AppError("Some error")
 
 @app.route("/characters")
 def character_list():
@@ -21,3 +30,13 @@ def character_list():
 def character(character_id, junk):
     character = mock_db.get(character_id) or abort(404)
     return render_template("character.html.j2", character=character)
+
+
+@app.errorhandler(AppError)
+@app.errorhandler(IndexError)
+def error_page(e):
+    return f"<h1>Error</h1>{type(e).__name__}"
+
+@app.errorhandler(werkzeug.exceptions.HTTPException)
+def http_exception_page(e):
+    return f"<h1>Error</h1>{type(e).__name__}, {e.code}"
