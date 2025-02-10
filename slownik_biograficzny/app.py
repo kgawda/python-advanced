@@ -39,4 +39,4 @@ def error_page(e):
 
 @app.errorhandler(werkzeug.exceptions.HTTPException)
 def http_exception_page(e):
-    return f"<h1>Error</h1>{type(e).__name__}, {e.code}"
+    return f"<h1>Error</h1>{type(e).__name__}, {e.code}", e.code
