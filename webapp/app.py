@@ -1,3 +1,4 @@
+import contextlib
 from functools import wraps
 import json
 import time
@@ -16,16 +17,22 @@ from webapp.views.game import bp as bp_game
 
 def create_app():
     app = Flask(__name__)
-    app.secret_key = "--- Development-only key ---"
-
+    app.config.from_object("webapp.default_config")
+    with contextlib.suppress(ImportError):
+        app.config.from_object("webapp.config")
+    app.config.from_prefixed_env()
+    # e.g. export FLASK_COMPANY_NAME="Fiasco Sp.z.o.o."
+    with contextlib.suppress(FileNotFoundError):
+        app.config.from_file("config.json", load=json.load)
 
     def funny_name(name: str) -> str:
         return name[::-1].title()
 
     @app.context_processor
     def standard_context():
+        print(app.config)
         return dict(
-            company_name="Acme INC.",
+            company_name=app.config["COMPANY_NAME"],
             iter_cards_at=iter_cards_at,
             # Funkcje też można tu przekazać
         )
