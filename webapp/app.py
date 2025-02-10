@@ -1,6 +1,7 @@
 from functools import wraps
+import json
 import time
-from flask import Flask, make_response, redirect, render_template, request, g, session, url_for
+from flask import Flask, jsonify, make_response, redirect, render_template, request, g, session, url_for
 
 # import webapp.example
 # from . import example
@@ -142,6 +143,30 @@ def game():
         board_size_x=15,
         board_size_y=15,
     )
+
+@app.get('/api/game/cards')
+def get_cards_api():
+    data = [c.to_dict() for c in cards]
+    # return json.dumps(data)
+    # return jsonify(data)
+    return data
+
+# curl -v -X POST -d '{"move": "up"}' --header "Content-Type: application/json" localhost:5000/api/game/move
+@app.post('/api/game/move')
+def do_movement_api():
+    # data = request.get_data()
+    # json.loads(data)
+    data = request.get_json()
+    # TODO implement movement and do_turn
+    return "TODO"
+
+# curl -N localhost:5000/steam-test
+@app.get("/steam-test")
+def stream_test():
+    import time
+    for x in range(20):
+        yield f"--{x}--"
+        time.sleep(0.1)
 
 if __name__ == "__main__":
     app.run(debug=True)  #, use_reloader=False

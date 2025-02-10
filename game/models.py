@@ -1,5 +1,5 @@
 import random
-from typing import Self
+from typing import Any, Self
 from abc import ABC, abstractmethod
 
 from .getchar import getchar_arrow
@@ -75,6 +75,10 @@ class Card(ABC):
 
     def summary(self) -> str:
         return ""
+    
+    def to_dict(self) -> dict[str, int|str]:
+        return {"x": self.position.x, "y": self.position.y, "symbol": self.get_symbol()}
+
 
 class Creature(Card, ABC):
     live: int
