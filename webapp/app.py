@@ -1,8 +1,10 @@
+import asyncio
 import contextlib
 from functools import wraps
 import json
 import time
 from flask import Flask, jsonify, make_response, redirect, render_template, request, g, session, url_for
+import plotly.graph_objects as go
 
 # import webapp.example
 # from . import example
@@ -65,6 +67,23 @@ def create_app():
             return view(*args, **kwargs)
         return decorated_view
 
+    @app.get("/delay")
+    def delayed():
+        time.sleep(5)
+        return "<h1> OK \n"
+
+    # pip install flask[async]
+    @app.get("/delay_a")
+    async def delayed_a():
+        a, b = await asyncio.gather( asyncio.sleep(5),  asyncio.sleep(5) )
+        return "<h1> OK \n"
+
+
+    @app.get("/plot")
+    def plot():
+        fig = go.Figure(data=go.Scatter(x=[1, 2, 3, 4], y=[54, 23, 65, 12]))
+        fig_html = fig.to_html(full_html=False, include_plotlyjs='cdn')
+        return f"<html><h1>Plot</h1>{fig_html}"
 
     @app.get("/login")
     def login_form():
