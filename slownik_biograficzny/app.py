@@ -37,6 +37,10 @@ def character(character_id, junk):
 def error_page(e):
     return f"<h1>Error</h1>{type(e).__name__}"
 
+# @app.errorhandler(404)
+# def error_404(e):
+#     return render_template(..., exception=e), 404
+
 @app.errorhandler(werkzeug.exceptions.HTTPException)
 def http_exception_page(e):
     return f"<h1>Error</h1>{type(e).__name__}, {e.code}", e.code
