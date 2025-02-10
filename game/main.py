@@ -42,7 +42,9 @@ def prepare_cards(board_size_x, board_size_y, n_enemies, n_heroes, hero_kwargs:d
     return cards
 
 
-def run_turn(board_size_x, board_size_y, cards, min_cards, print_target, sleep_time) -> int:
+def run_turn(board_size_x, board_size_y, cards, min_cards, print_target, sleep_time, card_remover=None) -> int:
+    if card_remover is None:
+        card_remover = cards.remove
     new_cards = 0
     if print_target:
         print_board(cards, board_size_x, board_size_y, print_target)
@@ -53,7 +55,7 @@ def run_turn(board_size_x, board_size_y, cards, min_cards, print_target, sleep_t
         for other in cards:
             if (card.position == other.position) and (other != card) and (card in cards):
                 # TODO: change `card in cards` to faster solution
-                card.interact_with(other, card_remover=cards.remove)
+                card.interact_with(other, card_remover=card_remover)
 
     if len(cards) < min_cards:
         # TODO: add more cards if more than 1 missing

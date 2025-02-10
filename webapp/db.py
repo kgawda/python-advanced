@@ -4,7 +4,7 @@ cards = []
 
 class DatabaseConnection:
     def get_cards(self):
-        return cards
+        return cards.copy()
     
     def append_cards(self, new_cards):
         cards.extend(new_cards)

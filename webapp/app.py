@@ -18,29 +18,9 @@ from webapp.views.game import bp as bp_game
 app = Flask(__name__)
 app.secret_key = "--- Development-only key ---"
 
-hero_movement = None
-def move_hero():
-    return hero_movement
-
-cards = prepare_cards(
-    board_size_x=15,
-    board_size_y=15,
-    n_enemies=5,
-    n_heroes=1,
-    hero_kwargs={"movement_callback": move_hero},
-)
-
 
 def funny_name(name: str) -> str:
     return name[::-1].title()
-
-
-
-def get_db():
-    if '_db' not in g:
-        g._db = ... # CreateDatabaseConnection(...)
-    return g._db
-
 
 @app.context_processor
 def standard_context():
